@@ -41,7 +41,7 @@ export default {
     return {
       clicked: false,
       reactions: [],
-      numberOfReacts: 3, //dohvatiti sa administratora,
+      numberOfReacts: 5, //dohvatiti sa administratora,
       message: "Thank you for your rating!", //i ovo dohvatiti,
       time: 1, // i ovo
       settings:{},
