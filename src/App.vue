@@ -1,33 +1,33 @@
 <template>
   <div id="app">
+    <link
+     rel="stylesheet"
+     href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+     integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+     crossorigin="anonymous"
+   >
     <img
       id="thumb"
       v-show="!clicked"
-      src="./assets/thumbs.png"
+      src="./assets/positive-vote.svg"
       style="display: block; margin-left:auto; margin-right: auto"
     >
+    <br>
     <p v-show="!clicked">Rate our service!</p>
+    <br>
     <div v-show="!clicked">
-      <img src="./assets/smile.png" id="smile" class="emotions" v-on:click="clickedReact('smile')">
-      <img
-        v-show="numberOfReacts>3"
-        src="./assets/between1.png"
-        id="between1"
-        class="emotions"
-        v-on:click="clickedReact('between happy and meh')"
-      >
-      <img src="./assets/meh.png" id="meh" class="emotions" v-on:click="clickedReact('meh')">
-      <img
-        v-show="numberOfReacts>4"
-        src="./assets/between2.png"
-        id="between2"
-        class="emotions"
-        v-on:click="clickedReact('between meh and sad')"
-      >
-      <img src="./assets/sad.png" id="sad" class="emotions" v-on:click="clickedReact('sad')">
+      <v-btn v-for="(item, index) in emoticons" 
+             v-bind:item="item" 
+             v-bind:index="index" 
+             v-bind:key="item.id"
+             @click="clickedReact(item.id)"
+             >
+             <i :class="item.symbol"></i>
+      </v-btn>
     </div>
     <div id="whole" v-show="clicked">
-      <img src="./assets/tick.png">
+      <img src="./assets/check.svg">
+      <br><br>
       <p>{{message}}</p>
     </div>
     <br>
@@ -35,28 +35,32 @@
 </template>
 
 <script>
+import axios from 'axios'
+const API_URL='http://172.20.15.56:3000'
 export default {
   name: "App",
   data: function() {
     return {
       clicked: false,
       reactions: [],
-      numberOfReacts: 3, //dohvatiti sa administratora,
+      numberOfReacts: 5, //dohvatiti sa administratora,
       message: "Thank you for your rating!", //i ovo dohvatiti,
       time: 1, // i ovo
       settings:{},
-      id : 1
+      id : 1,
+      emoticonsId: 1,
+      emoticons: []
     };
   },
   mounted: function() {
-    this.getSettings();
+    this.getCurrentSettings(),
+    this.loadMessage()
   },
   methods: {
-    clickedReact: function(react){
-      this.clicked=true;
+    clickedReact(react){
+      this.clicked=true
       const reacted = {
-        reaction : react,
-        settingId : this.id
+        emoticonId : react
       };
       setTimeout(this.goBack,this.time*1000);
       this.postData(reacted);
@@ -64,15 +68,28 @@ export default {
     goBack: function() {
       this.clicked = false;
     },
-    getSettings: function(){
-      let that = this;
-      this.axios.get("http://172.20.15.96:3000/settings").then(response => {
-      let id = response.data.data.length - 1;
-      that.message = response.data.data[id].message;
-      that.time = response.data.data[id].message_timeout;
-      that.numberOfReacts = response.data.data[id].emoticon_number;
-      that.id = response.data.data[id].id;
-    });
+    getCurrentSettings() {
+      let that = this
+      this.axios.get(`${API_URL}/settings/last`)
+      .then(response => {
+      that.emoticonsId=response.data.data.emoticonsGroupId
+      console.log('id: '+that.emoticonsId)
+    })
+    this.getEmoticonGroups()
+    },
+    getEmoticonGroups(){
+      let that = this
+      axios.get(`${API_URL}/emoticonsGroups`)
+			.then(response => {
+        for(let i=0; i<response.data.data.length;i++){
+          if(response.data.data[i].id == that.emoticonsId)
+          {
+            for(let j=0; j<response.data.data[i].emoticons.length;j++)
+            that.emoticons.push(response.data.data[i].emoticons[j])
+          }
+        }
+        console.log(that.emoticons)
+      })
     },
     postData: function(obj) {
       let data = JSON.stringify(obj);
@@ -86,18 +103,31 @@ export default {
         }
       });
 
-      xhr.open("POST", "http://172.20.15.96:3000/ratings");
+      xhr.open("POST", `${API_URL}/ratings`);
       xhr.setRequestHeader("Content-Type", "application/json");
       //xhr.setRequestHeader("Access-Control-Allow-Origin", xhr.getHeader("Origin"));
       xhr.setRequestHeader("cache-control", "no-cache");
 
       xhr.send(data);
-          }
+          },
+      loadMessage(){
+        let that=this
+      this.axios.get(`${API_URL}/settings/last`)
+      .then(response => {
+        that.time=response.data.data.messageTimeout
+        that.message=response.data.data.message.text
+      })
+      }
   }
 };
 </script>
 
 <style lang="less">
+button.v-btn.theme--light {
+    height: 55px;
+    width: 125px;
+    font-size: 20px;
+}
 body {
   background: rgb(36, 40, 46);
 }
