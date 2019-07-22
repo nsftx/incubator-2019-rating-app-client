@@ -23,6 +23,7 @@
              @click="clickedReact(item.id)"
              >
             <i :class="item.symbol"></i>
+            <p class="values" v-if="emoticonsId!=30">{{index+1}}</p>
       </v-btn>
     </div>
     <div id="whole" v-show="clicked">
@@ -39,21 +40,21 @@ import axios from 'axios'
 const API_URL='http://172.20.115.90:3000'
 export default {
   name: "App",
-  data: function() {
+  data() {
     return {
       clicked: false,
       reactions: [],
-      numberOfReacts: 5, //dohvatiti sa administratora,
-      message: "Thank you for your rating!", //i ovo dohvatiti,
-      time: 1, // i ovo
+      numberOfReacts: 5, 
+      message: "Thank you for your rating!", 
+      time: 1, 
       settings:{},
       id : 1,
       emoticonsId: 1,
       emoticons: []
     };
   },
-  mounted: function() {
-    this.getCurrentSettings(),
+  mounted() {
+    this.getEmoticonGroups(),
     this.loadMessage()
   },
   methods: {
@@ -65,32 +66,18 @@ export default {
       setTimeout(this.goBack,this.time*1000);
       this.postData(reacted);
     },
-    goBack: function() {
+    goBack() {
       this.clicked = false;
-    },
-    getCurrentSettings() {
-      let that = this
-      this.axios.get(`${API_URL}/settings/last`)
-      .then(response => {
-      that.numberOfReacts=response.data.data.emoticonNumber
-      that.emoticonsId=response.data.data.emoticonsGroupId
-    })
-    this.getEmoticonGroups()
     },
     getEmoticonGroups() {
       let that = this
-      axios.get(`${API_URL}/emoticonsGroups`)
+      axios.get(`${API_URL}/settings/last`)
 			.then(response => {
-        for(let i=0; i<response.data.data.length;i++){
-          if(response.data.data[i].id == that.emoticonsId)
-          {
-            for(let j=0; j<response.data.data[i].emoticons.length;j++)
-            that.emoticons.push(response.data.data[i].emoticons[j])
-          }
-        }
+            that.emoticons=response.data.emoticons
+            that.emoticonsId=response.data.data.emoticonsGroupId
       })
     },
-    postData: function(obj) {
+    postData(obj) {
       let data = JSON.stringify(obj);
 
       let xhr = new XMLHttpRequest();
@@ -169,5 +156,11 @@ body {
 p {
   color: rgb(214, 214, 214);
   font-size: 28px;
+}
+.values{
+  margin-top: 13px;
+  color: black;
+  font-size: 24px;
+  margin-left: 3px;
 }
 </style>
