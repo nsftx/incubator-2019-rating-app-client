@@ -22,7 +22,7 @@
              v-bind:key="item.id"
              @click="clickedReact(item.id)"
              >
-             <i :class="item.symbol"></i>
+            <i :class="item.symbol"></i>
       </v-btn>
     </div>
     <div id="whole" v-show="clicked">
@@ -36,7 +36,7 @@
 
 <script>
 import axios from 'axios'
-const API_URL='http://172.20.15.56:3000'
+const API_URL='http://172.20.115.90:3000'
 export default {
   name: "App",
   data: function() {
@@ -72,12 +72,12 @@ export default {
       let that = this
       this.axios.get(`${API_URL}/settings/last`)
       .then(response => {
+      that.numberOfReacts=response.data.data.emoticonNumber
       that.emoticonsId=response.data.data.emoticonsGroupId
-      console.log('id: '+that.emoticonsId)
     })
     this.getEmoticonGroups()
     },
-    getEmoticonGroups(){
+    getEmoticonGroups() {
       let that = this
       axios.get(`${API_URL}/emoticonsGroups`)
 			.then(response => {
@@ -88,7 +88,6 @@ export default {
             that.emoticons.push(response.data.data[i].emoticons[j])
           }
         }
-        console.log(that.emoticons)
       })
     },
     postData: function(obj) {
@@ -99,7 +98,7 @@ export default {
 
       xhr.addEventListener("readystatechange", function () {
         if (this.readyState === 4) {
-          console.log(this.responseText);
+          console.log('Success');
         }
       });
 
@@ -110,19 +109,25 @@ export default {
 
       xhr.send(data);
           },
-      loadMessage(){
+      loadMessage() {
         let that=this
       this.axios.get(`${API_URL}/settings/last`)
       .then(response => {
         that.time=response.data.data.messageTimeout
         that.message=response.data.data.message.text
       })
-      }
+      },
   }
 };
 </script>
 
 <style lang="less">
+/*button[index="1"]{
+  display:none;
+}
+button[index="3"]{
+  display:none;
+}*/
 button.v-btn.theme--light {
     height: 55px;
     width: 125px;
