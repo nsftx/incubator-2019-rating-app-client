@@ -37,7 +37,7 @@
 
 <script>
 import axios from 'axios'
-const API_URL='http://172.20.115.90:3000'
+const API_URL='http://172.20.116.64:3000'
 export default {
   name: "App",
   data() {
@@ -78,43 +78,14 @@ export default {
       })
     },
     postData(obj) {
-      let data = JSON.stringify(obj);
-
-      let xhr = new XMLHttpRequest();
-      //xhr.withCredentials = true;
-
-      xhr.addEventListener("readystatechange", function () {
-        if (this.readyState === 4) {
-          console.log('Success');
-        }
-      });
-
-      xhr.open("POST", `${API_URL}/ratings`);
-      xhr.setRequestHeader("Content-Type", "application/json");
-      //xhr.setRequestHeader("Access-Control-Allow-Origin", xhr.getHeader("Origin"));
-      xhr.setRequestHeader("cache-control", "no-cache");
-
-      xhr.send(data);
-          },
-      loadMessage() {
-        let that=this
-      this.axios.get(`${API_URL}/settings/last`)
-      .then(response => {
-        that.time=response.data.data.messageTimeout
-        that.message=response.data.data.message.text
-      })
-      },
-  }
+      axios.post(`${API_URL}/ratings`, obj)
+			.then(response => response.data)
+	}
+    },
 };
 </script>
 
 <style lang="less">
-/*button[index="1"]{
-  display:none;
-}
-button[index="3"]{
-  display:none;
-}*/
 button.v-btn.theme--light {
     height: 55px;
     width: 125px;
