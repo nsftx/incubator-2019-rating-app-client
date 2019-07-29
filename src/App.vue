@@ -37,7 +37,7 @@
 
 <script>
 import axios from 'axios'
-const API_URL='http://172.20.116.64:3000'
+const API_URL='http://172.20.15.9:3000'
 export default {
   name: "App",
   data() {
@@ -54,12 +54,18 @@ export default {
     };
   },
   mounted() {
-    this.getEmoticonGroups(),
-    this.loadMessage()
+    this.getEmoticonGroups();
+    this.notifyOnSettingsChange();
   },
   methods: {
+    notifyOnSettingsChange() {
+      const socket = require('socket.io-client')('http://172.20.15.9:7000');
+      socket.on('newSettings', (data) => {
+        this.emoticons = data.emoticons;
+      });
+    },
     clickedReact(react){
-      this.clicked=true
+      this.clicked = true
       const reacted = {
         emoticonId : react
       };
@@ -80,8 +86,8 @@ export default {
     postData(obj) {
       axios.post(`${API_URL}/ratings`, obj)
 			.then(response => response.data)
-	}
-    },
+    }
+  },
 };
 </script>
 
