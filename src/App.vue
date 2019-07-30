@@ -23,13 +23,13 @@
              @click="clickedReact(item.id)"
              >
             <i :class="item.symbol"></i>
-            <p class="values" v-if="emoticonsId!=30">{{index+1}}</p>
+            <p class="values" v-if="settings.emoticonsGroupId!=30">{{index+1}}</p>
       </v-btn>
     </div>
-    <div id="whole" v-show="clicked">
+    <div id="whole" v-if="clicked">
       <img src="./assets/check.svg">
       <br><br>
-      <p>{{message}}</p>
+      <p>{{settings.message.text}}</p>
     </div>
     <br>
   </div>
@@ -43,14 +43,8 @@ export default {
   data() {
     return {
       clicked: false,
-      reactions: [],
-      numberOfReacts: 5, 
-      message: "Thank you for your rating!", 
-      time: 1, 
-      settings:{},
-      id : 1,
-      emoticonsId: 1,
-      emoticons: []
+      settings: {},
+      emoticons: [],
     };
   },
   mounted() {
@@ -61,32 +55,31 @@ export default {
     notifyOnSettingsChange() {
       const socket = require('socket.io-client')('http://172.20.15.9:7000');
       socket.on('newSettings', (data) => {
+        this.settings = data.data;
         this.emoticons = data.emoticons;
       });
     },
     clickedReact(react){
-      this.clicked = true
+      this.clicked = true;
       const reacted = {
-        emoticonId : react
+        emoticonId : react,
       };
-      setTimeout(this.goBack,this.time*1000);
+      setTimeout(this.goBack, this.settings.messageTimeout*1000);
       this.postData(reacted);
     },
     goBack() {
       this.clicked = false;
     },
     getEmoticonGroups() {
-      let that = this
       axios.get(`${API_URL}/settings/last`)
 			.then(response => {
-            that.emoticons=response.data.emoticons
-            that.emoticonsId=response.data.data.emoticonsGroupId
-      })
+        this.settings = response.data.data;
+        this.emoticons = response.data.emoticons;
+      });
     },
     postData(obj) {
-      axios.post(`${API_URL}/ratings`, obj)
-			.then(response => response.data)
-    }
+      axios.post(`${API_URL}/ratings`, obj);
+    },
   },
 };
 </script>
