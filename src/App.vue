@@ -54,9 +54,9 @@ export default {
   methods: {
     notifyOnSettingsChange() {
       const socket = require('socket.io-client')('http://172.20.15.9:7000');
-      socket.on('newSettings', (data) => {
-        this.settings = data.data;
-        this.emoticons = data.emoticons;
+      socket.on('newSettings', (settings) => {
+        this.settings = settings.data;
+        this.emoticons = settings.emoticons;
       });
     },
     clickedReact(react){
