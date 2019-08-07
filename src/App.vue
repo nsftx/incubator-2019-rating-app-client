@@ -1,26 +1,24 @@
 <template>
   <div id="app">
     <div v-show="!clicked">
-      <img
-        class="thumb"
-        src="./assets/positive-vote.png"
-      >
+      <img class="thumb" src="./assets/positive-vote.png" />
       <p>Rate our service!</p>
       <div>
-        <v-btn v-for="(item, index) in emoticons" 
-              v-bind:item="item" 
-              v-bind:index="index" 
-              v-bind:key="item.id"
-              @click="clickedReact(item.id)"
-              >
-              <i :class="item.symbol"></i>
-              <p class="values" v-if="settings.emoticonsGroupId!=30">{{index + 1}}</p>
+        <v-btn
+          v-for="(item, index) in emoticons"
+          :item="item"
+          :index="index"
+          :key="item.id"
+          @click="clickedReact(item.id)"
+        >
+          <i :class="item.symbol" />
+          <p class="values" v-if="settings.emoticonsGroupId != 30">{{ index + 1 }}</p>
         </v-btn>
       </div>
     </div>
     <div class="whole" v-if="clicked">
-      <img class="check" src="./assets/check.png">
-      <p>{{settings.message.text}}</p>
+      <img class="check" src="./assets/check.png" />
+      <p>{{ settings.message.text }}</p>
     </div>
   </div>
 </template>
@@ -32,23 +30,6 @@ export default {
       clicked: false,
     };
   },
-  created() {
-    this.$store.dispatch('getActiveSettings');
-    this.$store.dispatch('notifyOnSettingsChange');
-  },
-  methods: {
-    clickedReact(react){
-      this.clicked = true;
-      const rating = {
-        emoticonId : react,
-      };
-      setTimeout(this.goBack, this.settings.messageTimeout*1000);
-      this.$store.dispatch('postRating', rating);
-    },
-    goBack() {
-      this.clicked = false;
-    },
-  },
   computed: {
     settings() {
       return this.$store.getters.settings;
@@ -56,13 +37,30 @@ export default {
     emoticons() {
       return this.$store.getters.emoticons;
     },
-  }
+  },
+  created() {
+    this.$store.dispatch('getActiveSettings');
+    this.$store.dispatch('notifyOnSettingsChange');
+  },
+  methods: {
+    clickedReact(react) {
+      this.clicked = true;
+      const rating = {
+        emoticonId: react,
+      };
+      setTimeout(this.goBack, this.settings.messageTimeout * 1000);
+      this.$store.dispatch('postRating', rating);
+    },
+    goBack() {
+      this.clicked = false;
+    },
+  },
 };
 </script>
 
 <style lang="less">
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -82,9 +80,9 @@ p {
   font-size: 28px;
 }
 button.v-btn.theme--light {
-    height: 55px;
-    width: 125px;
-    font-size: 20px;
+  height: 55px;
+  width: 125px;
+  font-size: 20px;
 }
 .values {
   margin-top: 13px;
