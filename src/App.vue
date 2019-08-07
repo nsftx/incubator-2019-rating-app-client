@@ -3,7 +3,7 @@
     <div v-show="!clicked">
       <img
         class="thumb"
-        src="./assets/positive-vote.svg"
+        src="./assets/positive-vote.png"
       >
       <p>Rate our service!</p>
       <div>
@@ -19,7 +19,7 @@
       </div>
     </div>
     <div class="whole" v-if="clicked">
-      <img class="check" src="./assets/check.svg">
+      <img class="check" src="./assets/check.png">
       <p>{{settings.message.text}}</p>
     </div>
   </div>
