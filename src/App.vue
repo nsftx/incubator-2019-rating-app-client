@@ -1,8 +1,24 @@
 <template>
   <div id="app">
+    <v-snackbar
+      v-model="snackbarError"
+      :bottom="y === 'bottom'"
+      :color="color"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :right="x === 'right'"
+      :timeout="timeout"
+      :top="y === 'top'"
+      :vertical="mode === 'vertical'"
+    >
+      Error: {{ snackbarErr }}
+      <v-btn dark text @click="snackbarError = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <div v-show="!clicked">
       <img class="thumb" src="./assets/positive-vote.png" />
-      <p>Rate our service!</p>
+      <p class="marg-btm">Rate our service!</p>
       <div>
         <v-btn
           v-for="(item, index) in emoticons"
@@ -28,6 +44,13 @@ export default {
   data() {
     return {
       clicked: false,
+      color: '',
+      mode: '',
+      snackbarError: false,
+      text: '',
+      timeout: 4000,
+      x: null,
+      y: 'top',
     };
   },
   computed: {
@@ -36,6 +59,14 @@ export default {
     },
     emoticons() {
       return this.$store.getters.emoticons;
+    },
+    snackbarErr() {
+      return this.$store.getters.snackbarErr;
+    },
+  },
+  watch: {
+    snackbarErr() {
+      this.snackbarError = true;
     },
   },
   created() {
@@ -59,6 +90,12 @@ export default {
 </script>
 
 <style lang="less">
+.marg-btm {
+  margin-bottom: 30px;
+}
+button.v-btn.theme--dark {
+  background: #353535 !important;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
