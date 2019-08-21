@@ -20,13 +20,14 @@
         <v-btn
           v-for="(item, index) in emoticons"
           :key="item.id"
+          color="#BEBEBE"
           :item="item"
           :index="index"
           @click="clickedReact(item.id)"
         >
           <i :class="item.symbol" />
           <p
-            v-if="settings.emoticonsGroupId != 30"
+            v-if="settings.emoticonsGroupId != 4"
             class="values"
           >
             {{ index + 1 }}
