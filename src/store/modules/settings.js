@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios';
 
-const API_URL = 'http://172.105.81.4:4000/api/v1';
+const API_URL = 'https://ratingsapp.ddns.net:3000/api/v1';
 export default ({
   state: {
     activeSettings: {},
@@ -16,8 +16,8 @@ export default ({
     },
   },
   getters: {
-    settings: (state) => state.activeSettings,
-    emoticons: (state) => state.emoticons,
+    settings: state => state.activeSettings,
+    emoticons: state => state.emoticons,
   },
   actions: {
     getActiveSettings({ commit }) {
@@ -36,7 +36,7 @@ export default ({
     },
     notifyOnSettingsChange({ commit }) {
       // eslint-disable-next-line global-require
-      const socket = require('socket.io-client')('http://172.105.81.4:7000');
+      const socket = require('socket.io-client')('https://ratingsapp.ddns.net:7000/');
       socket.on('newSettings', (settings) => {
         commit('setSettings', settings.data);
         commit('setEmoticons', settings.emoticons);
