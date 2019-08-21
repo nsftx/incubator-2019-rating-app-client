@@ -4,7 +4,7 @@ import axios from 'axios';
 
 Vue.use(Vuex);
 
-const API_URL = 'http://172.20.116.163:3000';
+const API_URL = 'http://172.20.15.193:3000/api/v1';
 export default new Vuex.Store({
   state: {
     settings: {},
@@ -33,8 +33,8 @@ export default new Vuex.Store({
       axios.post(`${API_URL}/ratings`, rating);
     },
     notifyOnSettingsChange({ commit }) {
-      const socket = require('socket.io-client')('http://172.20.116.163:7000');
-      socket.on('newSettings', settings => {
+      const socket = require('socket.io-client')('http://172.20.15.193:7000/');
+      socket.on('newSettings', (settings) => {
         commit('setSettings', settings.data);
         commit('setEmoticons', settings.emoticons);
       });
