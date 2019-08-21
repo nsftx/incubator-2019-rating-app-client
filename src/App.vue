@@ -2,38 +2,46 @@
   <div id="app">
     <v-snackbar
       v-model="snackbarError"
-      :bottom="y === 'bottom'"
-      :color="color"
-      :left="x === 'left'"
-      :multi-line="mode === 'multi-line'"
-      :right="x === 'right'"
-      :timeout="timeout"
-      :top="y === 'top'"
-      :vertical="mode === 'vertical'"
+      :class="snackbarErr.type"
+      top
+      :timeout="2000"
     >
-      Error: {{ snackbarErr }}
-      <v-btn dark text @click="snackbarError = false">
-        Close
-      </v-btn>
+      {{ snackbarErr.text }}
     </v-snackbar>
     <div v-show="!clicked">
-      <img class="thumb" src="./assets/positive-vote.png" />
-      <p class="marg-btm">Rate our service!</p>
+      <img
+        class="thumb"
+        src="./assets/positive-vote.png"
+      >
+      <p class="marg-btm">
+        Rate our service!
+      </p>
       <div>
         <v-btn
           v-for="(item, index) in emoticons"
+          :key="item.id"
           :item="item"
           :index="index"
-          :key="item.id"
           @click="clickedReact(item.id)"
         >
           <i :class="item.symbol" />
-          <p class="values" v-if="settings.emoticonsGroupId != 30">{{ index + 1 }}</p>
+          <p
+            v-if="settings.emoticonsGroupId != 30"
+            class="values"
+          >
+            {{ index + 1 }}
+          </p>
         </v-btn>
       </div>
     </div>
-    <div class="whole" v-if="clicked">
-      <img class="check" src="./assets/check.png" />
+    <div
+      v-if="clicked"
+      class="whole"
+    >
+      <img
+        class="check"
+        src="./assets/check.png"
+      >
       <p>{{ settings.message.text }}</p>
     </div>
   </div>
@@ -44,13 +52,7 @@ export default {
   data() {
     return {
       clicked: false,
-      color: '',
-      mode: '',
       snackbarError: false,
-      text: '',
-      timeout: 4000,
-      x: null,
-      y: 'top',
     };
   },
   computed: {
@@ -61,7 +63,7 @@ export default {
       return this.$store.getters.emoticons;
     },
     snackbarErr() {
-      return this.$store.getters.snackbarErr;
+      return this.$store.getters.notifications;
     },
   },
   watch: {
@@ -134,5 +136,17 @@ button.v-btn.theme--light {
 }
 .check {
   margin-bottom: 5%;
+}
+.error .v-snack__content {
+  background: red;
+}
+.success .v-snack__content {
+  background: green;
+}
+.v-snack.v-snack--active.v-snack--top {
+  background: none !important;
+}
+::-webkit-scrollbar {
+  display: none;
 }
 </style>
