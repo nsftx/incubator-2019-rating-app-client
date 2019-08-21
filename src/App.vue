@@ -1,138 +1,138 @@
 <template>
   <div id="app">
-    <img
-      id="thumb"
-      v-show="!clicked"
-      src="./assets/thumbs.png"
-      style="display: block; margin-left:auto; margin-right: auto"
+    <v-snackbar
+      v-model="snackbarError"
+      :bottom="y === 'bottom'"
+      :color="color"
+      :left="x === 'left'"
+      :multi-line="mode === 'multi-line'"
+      :right="x === 'right'"
+      :timeout="timeout"
+      :top="y === 'top'"
+      :vertical="mode === 'vertical'"
     >
-    <p v-show="!clicked">Rate our service!</p>
+      Error: {{ snackbarErr }}
+      <v-btn dark text @click="snackbarError = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <div v-show="!clicked">
-      <img src="./assets/smile.png" id="smile" class="emotions" v-on:click="clickedReact('smile')">
-      <img
-        v-show="numberOfReacts>3"
-        src="./assets/between1.png"
-        id="between1"
-        class="emotions"
-        v-on:click="clickedReact('between happy and meh')"
-      >
-      <img src="./assets/meh.png" id="meh" class="emotions" v-on:click="clickedReact('meh')">
-      <img
-        v-show="numberOfReacts>4"
-        src="./assets/between2.png"
-        id="between2"
-        class="emotions"
-        v-on:click="clickedReact('between meh and sad')"
-      >
-      <img src="./assets/sad.png" id="sad" class="emotions" v-on:click="clickedReact('sad')">
+      <img class="thumb" src="./assets/positive-vote.png" />
+      <p class="marg-btm">Rate our service!</p>
+      <div>
+        <v-btn
+          v-for="(item, index) in emoticons"
+          :item="item"
+          :index="index"
+          :key="item.id"
+          @click="clickedReact(item.id)"
+        >
+          <i :class="item.symbol" />
+          <p class="values" v-if="settings.emoticonsGroupId != 30">{{ index + 1 }}</p>
+        </v-btn>
+      </div>
     </div>
-    <div id="whole" v-show="clicked">
-      <img src="./assets/tick.png">
-      <p>{{message}}</p>
+    <div class="whole" v-if="clicked">
+      <img class="check" src="./assets/check.png" />
+      <p>{{ settings.message.text }}</p>
     </div>
-    <br>
   </div>
 </template>
 
 <script>
 export default {
-  name: "App",
-  data: function() {
+  data() {
     return {
       clicked: false,
-      reactions: [],
-      numberOfReacts: 5, //dohvatiti sa administratora,
-      message: "Thank you for your rating!", //i ovo dohvatiti,
-      time: 1, // i ovo
-      settings:{},
-      id : 1
+      color: '',
+      mode: '',
+      snackbarError: false,
+      text: '',
+      timeout: 4000,
+      x: null,
+      y: 'top',
     };
   },
-  mounted: function() {
-    this.getSettings();
+  computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    emoticons() {
+      return this.$store.getters.emoticons;
+    },
+    snackbarErr() {
+      return this.$store.getters.snackbarErr;
+    },
+  },
+  watch: {
+    snackbarErr() {
+      this.snackbarError = true;
+    },
+  },
+  created() {
+    this.$store.dispatch('getActiveSettings');
+    this.$store.dispatch('notifyOnSettingsChange');
   },
   methods: {
-    clickedReact: function(react){
-      this.clicked=true;
-      const reacted = {
-        reaction : react,
-        settingId : this.id
+    clickedReact(react) {
+      this.clicked = true;
+      const rating = {
+        emoticonId: react,
       };
-      setTimeout(this.goBack,this.time*1000);
-      this.postData(reacted);
+      setTimeout(this.goBack, this.settings.messageTimeout * 1000);
+      this.$store.dispatch('postRating', rating);
     },
-    goBack: function() {
+    goBack() {
       this.clicked = false;
     },
-    getSettings: function(){
-      let that = this;
-      this.axios.get("http://172.20.15.96:3000/settings").then(response => {
-      let id = response.data.data.length - 1;
-      that.message = response.data.data[id].message;
-      that.time = response.data.data[id].message_timeout;
-      that.numberOfReacts = response.data.data[id].emoticon_number;
-      that.id = response.data.data[id].id;
-    });
-    },
-    postData: function(obj) {
-      let data = JSON.stringify(obj);
-
-      let xhr = new XMLHttpRequest();
-      //xhr.withCredentials = true;
-
-      xhr.addEventListener("readystatechange", function () {
-        if (this.readyState === 4) {
-          console.log(this.responseText);
-        }
-      });
-
-      xhr.open("POST", "http://172.20.15.96:3000/ratings");
-      xhr.setRequestHeader("Content-Type", "application/json");
-      //xhr.setRequestHeader("Access-Control-Allow-Origin", xhr.getHeader("Origin"));
-      xhr.setRequestHeader("cache-control", "no-cache");
-
-      xhr.send(data);
-          }
-  }
+  },
 };
 </script>
 
 <style lang="less">
-body {
-  background: rgb(36, 40, 46);
+.marg-btm {
+  margin-bottom: 30px;
 }
-.emotions {
-  height: 120px;
-  width: auto;
-  margin-top: 12px;
-  cursor: pointer;
-}
-#thumb {
-  height: 170px;
-  width: auto;
+button.v-btn.theme--dark {
+  background: #353535 !important;
 }
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }
-#smile,
-#meh,
-#between1,
-#between2,
-#sad {
-  margin-right: 20px; 
+body {
+  background: rgb(36, 40, 46);
 }
-#whole {
-  height: 100%;
-  width: 100%;
-  cursor: pointer;
+.thumb {
+  margin-bottom: 3%;
+  height: 170px;
+  width: auto;
 }
 p {
   color: rgb(214, 214, 214);
   font-size: 28px;
+}
+button.v-btn.theme--light {
+  height: 55px;
+  width: 125px;
+  font-size: 20px;
+}
+.values {
+  margin-top: 13px;
+  color: black;
+  font-size: 24px;
+  margin-left: 3px;
+}
+.whole {
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+.check {
+  margin-bottom: 5%;
 }
 </style>
