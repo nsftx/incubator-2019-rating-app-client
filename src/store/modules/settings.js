@@ -18,8 +18,8 @@ export default ({
     },
   },
   getters: {
-    settings: (state) => state.activeSettings,
-    emoticons: (state) => state.emoticons,
+    settings: state => state.activeSettings,
+    emoticons: state => state.emoticons,
   },
   actions: {
     getActiveSettings({ commit }) {
