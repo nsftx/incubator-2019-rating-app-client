@@ -1,5 +1,3 @@
-/* eslint-disable prefer-destructuring */
-/* eslint-disable no-tabs */
 import Vue from 'vue';
 import Vuex from 'vuex';
 import settings from './modules/settings';

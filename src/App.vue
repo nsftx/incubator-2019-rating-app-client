@@ -93,22 +93,23 @@ export default {
 </script>
 
 <style lang="less">
+@import './styles/main.less';
 .marg-btm {
   margin-bottom: 30px;
 }
 button.v-btn.theme--dark {
-  background: #353535 !important;
+  background: @grey !important;
 }
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: @bluewood;
   margin-top: 60px;
 }
 body {
-  background: rgb(36, 40, 46);
+  background: @shark;
 }
 .thumb {
   margin-bottom: 3%;
@@ -116,7 +117,7 @@ body {
   width: auto;
 }
 p {
-  color: rgb(214, 214, 214);
+  color: @alto;
   font-size: 28px;
 }
 button.v-btn.theme--light {
@@ -126,7 +127,7 @@ button.v-btn.theme--light {
 }
 .values {
   margin-top: 13px;
-  color: black;
+  color: @black;
   font-size: 24px;
   margin-left: 3px;
 }
@@ -139,10 +140,10 @@ button.v-btn.theme--light {
   margin-bottom: 5%;
 }
 .error .v-snack__content {
-  background: red;
+  background: @error;
 }
 .success .v-snack__content {
-  background: green;
+  background: @success;
 }
 .v-snack.v-snack--active.v-snack--top {
   background: none !important;
