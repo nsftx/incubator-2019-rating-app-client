@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 export default ({
   state: {
     notifications: {},
@@ -8,7 +9,7 @@ export default ({
     },
   },
   getters: {
-    notifications: (state) => state.notifications,
+    notifications: state => state.notifications,
   },
   actions: {
     setMessage({ commit }, message) {
