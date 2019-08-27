@@ -1,8 +1,8 @@
 /* eslint-disable no-param-reassign */
+import io from 'socket.io-client';
 import axios from 'axios';
 
 const API_URL = 'https://ratingsapp.ddns.net:3000/api/v1';
-const socket = require('socket.io-client')('https://ratingsapp.ddns.net:7000');
 
 export default ({
   state: {
@@ -37,8 +37,9 @@ export default ({
       axios.post(`${API_URL}/ratings`, rating);
     },
     notifyOnSettingsChange({ commit }) {
-      // eslint-disable-next-line global-require
+      const socket = io.connect('https://ratingsapp.ddns.net:7000', { transports: ['websocket'], rejectUnauthorized: false });
       socket.on('message', (settings) => {
+        console.log(settings);
         commit('setSettings', settings.data);
         commit('setEmoticons', settings.emoticons);
         commit('setMessage', { type: 'success', text: 'Settings updated' });
