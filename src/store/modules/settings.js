@@ -38,7 +38,7 @@ export default ({
     },
     notifyOnSettingsChange({ commit }) {
       // eslint-disable-next-line global-require
-      socket.on('newSettings', (settings) => {
+      socket.on('message', (settings) => {
         commit('setSettings', settings.data);
         commit('setEmoticons', settings.emoticons);
         commit('setMessage', { type: 'success', text: 'Settings updated' });
