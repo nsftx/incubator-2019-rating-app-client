@@ -125,17 +125,17 @@ p {
   font-size: 28px;
 }
 button.v-btn.theme--light {
-  height: 80px;
-  width: 145px;
-  font-size: 40px;
+  height: 90px;
+  width: 160px;
+  font-size: 42px;
   color: white;
 }
 .values {
-  margin-top: 15px;
+  margin-top: 20px;
   color: @white;
   font-weight: bold;
-  font-size: 24px;
-  margin-left: 5px;
+  font-size: 30px;
+  margin-left: 10px;
 }
 .whole {
   height: 100%;
