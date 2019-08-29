@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import io from 'socket.io-client';
 import axios from 'axios';
+import messages from './notifications';
 
 const API_URL = 'https://ratingsapp.ddns.net:3000/api/v1';
 
@@ -15,6 +16,14 @@ export default ({
     },
     setEmoticons(state, value) {
       state.emoticons = value;
+    },
+    SOCKET_ONMESSAGE(state, message) {
+      const settings = JSON.parse(message.data);
+      if (settings.type === 'settings') {
+        messages.state.notifications = { type: 'success', text: 'Settings updated' };
+        state.activeSettings = settings.data;
+        state.emoticons = settings.emoticons;
+      }
     },
   },
   getters: {
@@ -35,15 +44,6 @@ export default ({
     // eslint-disable-next-line no-empty-pattern
     postRating({}, rating) {
       axios.post(`${API_URL}/ratings`, rating);
-    },
-    notifyOnSettingsChange({ commit }) {
-      const socket = io.connect('https://ratingsapp.ddns.net:7000', { transports: ['websocket'], rejectUnauthorized: false });
-      socket.on('message', (settings) => {
-        console.log(settings);
-        commit('setSettings', settings.data);
-        commit('setEmoticons', settings.emoticons);
-        commit('setMessage', { type: 'success', text: 'Settings updated' });
-      });
     },
   },
 });
