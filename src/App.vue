@@ -1,12 +1,12 @@
 <template>
   <div id="app">
     <v-snackbar
-      v-model="snackbarError"
-      :class="snackbarErr.type"
+      v-model="snackbar"
+      :class="snackbarMsg.type"
       top
       :timeout="2000"
     >
-      {{ snackbarErr.text }}
+      {{ snackbarMsg.text }}
     </v-snackbar>
     <div v-show="!clicked">
       <img
@@ -20,7 +20,7 @@
         <v-btn
           v-for="(item, index) in emoticons"
           :key="item.id"
-          color="#BEBEBE"
+          color="#2c3e50"
           :item="item"
           :index="index"
           @click="clickedReact(item.id)"
@@ -53,28 +53,13 @@ export default {
   data() {
     return {
       clicked: false,
-      snackbarError: false,
+      snackbar: false,
     };
   },
-  computed: {
-    settings() {
-      return this.$store.getters.settings;
-    },
-    emoticons() {
-      return this.$store.getters.emoticons;
-    },
-    snackbarErr() {
-      return this.$store.getters.notifications;
-    },
-  },
-  watch: {
-    snackbarErr() {
-      this.snackbarError = true;
-    },
-  },
   created() {
-    this.$store.dispatch('getActiveSettings');
-    this.$store.dispatch('notifyOnSettingsChange');
+    this.$store.dispatch('getActiveSettings')
+    .then(() => {
+    });
   },
   methods: {
     clickedReact(react) {
@@ -87,6 +72,26 @@ export default {
     },
     goBack() {
       this.clicked = false;
+    },
+  },
+  computed: {
+    settings() {
+      return this.$store.getters.settings;
+    },
+    emoticons() {
+      return this.$store.getters.emoticons;
+    },
+    snackbarMsg() {
+      return this.$store.getters.notifications;
+    },
+  },
+  watch: {
+    snackbarMsg: {
+      handler() {
+        console.log("err");
+        this.snackbar = true;
+      },
+      deep: true,
     },
   },
 };
@@ -121,9 +126,10 @@ p {
   font-size: 28px;
 }
 button.v-btn.theme--light {
-  height: 55px;
-  width: 125px;
-  font-size: 20px;
+  height: 80px;
+  width: 145px;
+  font-size: 40px;
+  color: white;
 }
 .values {
   margin-top: 13px;
