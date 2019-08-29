@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import io from 'socket.io-client';
 import axios from 'axios';
 import messages from './notifications';
 

@@ -56,24 +56,6 @@ export default {
       snackbar: false,
     };
   },
-  created() {
-    this.$store.dispatch('getActiveSettings')
-    .then(() => {
-    });
-  },
-  methods: {
-    clickedReact(react) {
-      this.clicked = true;
-      const rating = {
-        emoticonId: react,
-      };
-      setTimeout(this.goBack, this.settings.messageTimeout * 1000);
-      this.$store.dispatch('postRating', rating);
-    },
-    goBack() {
-      this.clicked = false;
-    },
-  },
   computed: {
     settings() {
       return this.$store.getters.settings;
@@ -88,10 +70,27 @@ export default {
   watch: {
     snackbarMsg: {
       handler() {
-        console.log("err");
         this.snackbar = true;
       },
       deep: true,
+    },
+  },
+  created() {
+    this.$store.dispatch('getActiveSettings')
+      .then(() => {
+      });
+  },
+  methods: {
+    clickedReact(react) {
+      this.clicked = true;
+      const rating = {
+        emoticonId: react,
+      };
+      setTimeout(this.goBack, this.settings.messageTimeout * 1000);
+      this.$store.dispatch('postRating', rating);
+    },
+    goBack() {
+      this.clicked = false;
     },
   },
 };
@@ -132,10 +131,11 @@ button.v-btn.theme--light {
   color: white;
 }
 .values {
-  margin-top: 13px;
-  color: @black;
+  margin-top: 15px;
+  color: @white;
+  font-weight: bold;
   font-size: 24px;
-  margin-left: 3px;
+  margin-left: 5px;
 }
 .whole {
   height: 100%;
